@@ -51,7 +51,34 @@ pip install -r requirements.txt
 uvicorn api.main:app --reload --port 8000
 ```
 
-Variáveis de ambiente necessárias (nunca hardcode):
+## Variáveis de ambiente
+
+Nunca hardcode segredos no código. A configuração é centralizada em
+`config.py`, usando `pydantic-settings` para carregar de um arquivo `.env`
+local.
+
+**Desenvolvimento local:**
+
+```bash
+cp .env.example .env
+# edite .env com valores reais (ou deixe em branco — nenhuma variável
+# é exigida para rodar os testes ou subir a API neste protótipo, já
+# que nenhum módulo as consome de fato ainda)
+```
+
+O `.env` já está no `.gitignore` — nunca será commitado. `.env.example`
+é o template seguro que fica versionado, sem segredos reais.
+
+**Produção:** nunca use arquivo `.env` em servidor ou container. Injete
+as mesmas variáveis pelo gerenciador de segredos da plataforma de deploy
+(ex.: variáveis de ambiente do serviço no Render/Railway/Fly.io, Secrets
+Manager na AWS, Secret Manager no GCP, ou `docker run -e`/`env_file` do
+Docker Compose apontando para um arquivo fora do controle de versão). Se
+o deploy for via GitHub Actions, os mesmos valores vão em
+`Settings → Secrets and variables → Actions` do repositório.
+
+Variáveis atualmente definidas (nenhuma é consumida por código real
+ainda — ver `config.py` para o porquê):
 
 ```
 DATABASE_URL=
